@@ -10,12 +10,26 @@ use Illuminate\Http\Request;
 
 class AsignacionAccesoriosController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $asignacionesaccesorios = AsignacionesAccesorios::with(['empleado', 'accesorio', 'usuario'])->get();
-        return view('asignacionaccesorios.index', compact('asignacionesaccesorios'));
-    }
+        $search = $request->input('search');
+        $sortField = $request->input('sort', 'created_at');
+        $sortOrder = $request->input('order', 'desc');
 
+        $asignacionesaccesorios = AsignacionesAccesorios::with(['empleado', 'accesorio', 'usuario'])
+            ->when($search, function ($query, $search) {
+                return $query->whereHas('empleado', function ($q) use ($search) {
+                    $q->where('nombre', 'like', "%{$search}%");
+                })->orWhereHas('accesorio', function ($q) use ($search) {
+                    $q->where('descripcion', 'like', "%{$search}%");
+                })->orWhere('fecha_asignacion', 'like', "%{$search}%")
+                ->orWhere('ticket', 'like', "%{$search}%");
+            })
+            ->orderBy($sortField, $sortOrder)
+            ->paginate(10);
+
+        return view('asignacionaccesorios.index', compact('asignacionesaccesorios', 'search', 'sortField', 'sortOrder'));
+    }
     public function create()
     {
         $empleados = Empleado::all();
@@ -78,5 +92,10 @@ class AsignacionAccesoriosController extends Controller
         $asignacion->delete();
         return redirect()->route('asignacionaccesorios.index')
             ->with('success', 'Asignación de accesorio eliminada con éxito.');
+    }
+
+    public function __construct()
+    {
+        $this->middleware('auth');
     }
 }

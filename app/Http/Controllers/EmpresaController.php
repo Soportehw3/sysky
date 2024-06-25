@@ -59,4 +59,8 @@ class EmpresaController extends Controller
         return redirect()->route('empresas.index')
             ->with('success', 'Empresa eliminada exitosamente.');
     }
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
 }

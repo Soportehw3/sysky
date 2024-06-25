@@ -2,7 +2,7 @@
         <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
             <!-- Sidebar - Brand -->
-            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('home') }}">
                 <div class="sidebar-brand-icon rotate-n-15">
                     <i class="	fas fa-laptop-house"></i>
                 </div>
@@ -14,7 +14,7 @@
 
             <!-- Nav Item - Dashboard -->
             <li class="nav-item active">
-                <a class="nav-link" href="{{ route('empleados.index') }}">
+                <a class="nav-link" href="{{ route('home') }}">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>Dashboard</span></a>
             </li>
@@ -39,7 +39,14 @@
                 <a class="nav-link" href="{{ route('equipos.index') }}" data-target="#collapseTwo"
                     aria-expanded="true" aria-controls="collapseTwo">
                     <i class='fas fa-laptop'></i>
-                    <span>equipos</span>
+                    <span>Equipos</span>
+                </a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="{{ route('accesorios.index') }}" data-target="#collapseTwo"
+                    aria-expanded="true" aria-controls="collapseTwo">
+                    <i class='fas fa-keyboard'></i>
+                    <span>Accesorios</span>
                 </a>
             </li>
 
@@ -50,17 +57,25 @@
 
             <!-- Heading -->
             <div class="sidebar-heading">
-                Addons
+                Asignaciones
             </div>
 
-
-
-
             <!-- Nav Item - Tables -->
-            <li class="nav-item">
-                <a class="nav-link" href="tables.html">
-                    <i class="fas fa-fw fa-table"></i>
-                    <span>Tables</span></a>
+
+            <li class="nav-item active">
+                <a class="nav-link" href="{{ route('asignacionesequipos.index') }}" data-target="#collapseTwo"
+                    aria-expanded="true" aria-controls="collapseTwo">
+                    <i class='fas fa-keyboard'></i>
+                    <span>Asignacion de Equipo</span>
+                </a>
+            </li>
+
+            <li class="nav-item active">
+                <a class="nav-link" href="{{ route('asignacionaccesorios.index') }}" data-target="#collapseTwo"
+                    aria-expanded="true" aria-controls="collapseTwo">
+                    <i class='fas fa-keyboard'></i>
+                    <span>Asignacion de Accesorios</span>
+                </a>
             </li>
 
             <!-- Divider -->

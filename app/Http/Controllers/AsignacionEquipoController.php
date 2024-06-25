@@ -11,10 +11,29 @@ use Illuminate\Http\Request;
 
 class AsignacionEquipoController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $asignacionesequipos = AsignacionEquipo::with(['empleado', 'equipo', 'usuario', 'empresa'])->get();
-        return view('asignacionesequipos.index', compact('asignacionesequipos'));
+        $search = $request->input('search');
+        $sortField = $request->input('sort', 'fecha_asignacion');
+        $sortOrder = $request->input('order', 'desc');
+
+        $asignacionesequipos = AsignacionEquipo::with(['empleado', 'equipo', 'usuario', 'empresa'])
+            ->when($search, function ($query, $search) {
+                return $query->whereHas('empleado', function ($q) use ($search) {
+                    $q->where('nombre', 'like', "%{$search}%");
+                })->orWhereHas('equipo', function ($q) use ($search) {
+                    $q->where('numero_serie', 'like', "%{$search}%");
+                })->orWhere('fecha_asignacion', 'like', "%{$search}%")
+                    ->orWhere('ticket', 'like', "%{$search}%");
+            })
+            ->orderBy($sortField, $sortOrder)
+            ->paginate(10);
+
+        return view('asignacionesequipos.index', compact('asignacionesequipos', 'search', 'sortField', 'sortOrder'));
+    }
+    public function __construct()
+    {
+        $this->middleware('auth');
     }
 
     public function create()

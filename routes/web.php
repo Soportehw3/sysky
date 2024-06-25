@@ -8,11 +8,9 @@ use App\Http\Controllers\AccesorioController;
 use App\Http\Controllers\EmpresaController;
 use App\Http\Controllers\AsignacionEquipoController;
 use App\Http\Controllers\AsignacionAccesoriosController;
-
-
-
-
-
+use App\Http\Controllers\Auth\LoginController;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\HomeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,14 +23,14 @@ use App\Http\Controllers\AsignacionAccesoriosController;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
 
 
-Route::get('/admin', function () {
-    return view('layouts.admin');   
-});
+Route::get('/home', [HomeController::class, 'index'])->name('home');
+
+
+
+Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+
 
 // Ruta para listar empleados
 Route::get('empleados', [EmpleadoController::class, 'index'])->name('empleados.index');
@@ -174,4 +172,3 @@ Route::delete('/asignacionaccesorios/{asignacion}', [AsignacionAccesoriosControl
 
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

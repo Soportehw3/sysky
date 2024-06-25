@@ -7,11 +7,21 @@ use Illuminate\Http\Request;
 
 class AccesorioController extends Controller
 {
-    public function index()
-    {
-        $accesorios = Accesorio::all();
-        return view('accesorios.index', compact('accesorios'));
-    }
+    // En AccesorioController.php
+public function index(Request $request)
+{
+    $search = $request->input('search');
+    $sortField = $request->input('sort', 'created_at');
+    $sortOrder = $request->input('order', 'desc');
+
+    $accesorios = Accesorio::when($search, function ($query, $search) {
+        return $query->where('descripcion', 'like', "%{$search}%")
+            ->orWhere('marca', 'like', "%{$search}%")
+            ->orWhere('modelo', 'like', "%{$search}%");
+    })->orderBy($sortField, $sortOrder)->paginate(10);
+
+    return view('accesorios.index', compact('accesorios', 'search', 'sortField', 'sortOrder'));
+}
 
     public function create()
     {
@@ -25,6 +35,8 @@ class AccesorioController extends Controller
             'marca' => 'required|max:50',
             'modelo' => 'required|max:50',
             'cantidad' => 'required|integer',
+            'orden_compra_acc'=> 'required|integer',
+            'requisicion' => 'required|integer',
         ]);
 
         Accesorio::create($request->all());
@@ -50,6 +62,8 @@ class AccesorioController extends Controller
             'marca' => 'required|max:50',
             'modelo' => 'required|max:50',
             'cantidad' => 'required|integer',
+            'orden_compra_acc'=> 'required|integer',
+            'requisicion' => 'required|integer',
         ]);
 
         $accesorio->update($request->all());
@@ -64,5 +78,9 @@ class AccesorioController extends Controller
 
         return redirect()->route('accesorios.index')
             ->with('success', 'Accesorio eliminado exitosamente.');
+    }
+    public function __construct()
+    {
+        $this->middleware('auth');
     }
 }
