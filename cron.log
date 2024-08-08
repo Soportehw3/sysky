@@ -1,0 +1,29 @@
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+  2024-07-23 21:45:01 Running ['artisan' prestamos:notificar] ... 2,685ms DONE
+  ⇂ '/usr/bin/php8.1' 'artisan' prestamos:notificar > '/dev/null' 2>&1  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+  2024-07-23 21:48:02 Running ['artisan' sync:empleados] ........ 2,208ms DONE
+  ⇂ '/usr/bin/php8.1' 'artisan' sync:empleados > '/dev/null' 2>&1  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  No scheduled commands are ready to run.  
+

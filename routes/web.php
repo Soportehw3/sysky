@@ -8,11 +8,16 @@ use App\Http\Controllers\AccesorioController;
 use App\Http\Controllers\EmpresaController;
 use App\Http\Controllers\AsignacionEquipoController;
 use App\Http\Controllers\AsignacionAccesoriosController;
-
-
-
-
-
+use App\Http\Controllers\Auth\LoginController;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\PrestamoController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\AccionesController;
+use App\Models\AsignacionEquipo;
+use App\Models\Empleado;
+use App\Models\Equipo;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,14 +30,12 @@ use App\Http\Controllers\AsignacionAccesoriosController;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
 
 
-Route::get('/admin', function () {
-    return view('layouts.admin');   
-});
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'home'])->name('home');
+
+Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+
 
 // Ruta para listar empleados
 Route::get('empleados', [EmpleadoController::class, 'index'])->name('empleados.index');
@@ -78,6 +81,12 @@ Route::put('/equipos/{equipo}', [EquipoController::class, 'update'])->name('equi
 
 // Ruta para eliminar un equipo específico
 Route::delete('/equipos/{equipo}', [EquipoController::class, 'destroy'])->name('equipos.destroy');
+
+Route::get('/api/equipos/{id}/estado', function ($id) {
+    $equipo = Equipo::findOrFail($id);
+    return response()->json(['estado' => $equipo->estado]);
+});
+
 
 //-------------------------------------------------------------------------------------------------------------------------------------//
 
@@ -172,6 +181,12 @@ Route::put('/asignacionaccesorios/{asignacion}', [AsignacionAccesoriosController
 // Ruta para eliminar una asignación de accesorio específica
 Route::delete('/asignacionaccesorios/{asignacion}', [AsignacionAccesoriosController::class, 'destroy'])->name('asignacionaccesorios.destroy');
 
-Auth::routes();
+Route::resource('prestamos', PrestamoController::class);
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/acciones', [AccionesController::class, 'index'])->name('acciones.index');
+
+
+Route::get('/asignacionesequipos/{id}/pdf', [AsignacionEquipoController::class, 'generatePdf'])->name('asignacionesequipos.pdf');
+
+
+Auth::routes();

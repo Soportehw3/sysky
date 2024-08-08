@@ -1,14 +1,56 @@
-    <h1>Detalles de la Asignación de Accesorio</h1>
+@extends('layouts.admin')
 
-    <ul>
-        <li><strong>ID:</strong> {{ $asignacion->id }}</li>
-        <li><strong>Empleado:</strong> {{ $asignacion->empleado->nombre }}</li>
-        <li><strong>Accesorio:</strong> {{ $asignacion->accesorio->descripcion }}</li>
-        <li><strong>Cantidad Asignada:</strong> {{ $asignacion->cantidad_asignada }}</li>
-        <li><strong>Fecha de Asignación:</strong> {{ $asignacion->fecha_asignacion }}</li>
-        <li><strong>Usuario Responsable:</strong> {{ $asignacion->usuario->name }}</li>
-        <li><strong>Ticket:</strong> {{ $asignacion->ticket }}</li>
-        <li><strong>Nota Descriptiva:</strong> {{ $asignacion->nota_descriptiva }}</li>
-    </ul>
+@section('titulo', 'Detalle de la asignacion de accesorio')
 
-    <a href="{{ route('asignacionaccesorios.index') }}">Volver</a>
+@section('contenido')
+
+    <div class="card shadow-lg p-3 mb-5 bg-white rounded mb-4">
+        <div class="card-body">
+            <table class="table table-striped">
+                <tr>
+                    <th>ID:</th>
+                    <td>{{ $asignacion->id }}</td>
+                </tr>
+                <tr>
+                    <th>Empleado:</th>
+                    <td>{{ $asignacion->empleado->nombre }}</td>
+                </tr>
+                <tr>
+                    <th>Accesorio:</th>
+                    <td>{{ $asignacion->accesorio->descripcion }}</td>
+                </tr>
+                <tr>
+                    <th>Cantidad Asignada:</th>
+                    <td>{{ $asignacion->cantidad_asignada }}</td>
+                </tr>
+                <tr>
+                    <th>Fecha de Asignación:</th>
+                    <td>{{ $asignacion->fecha_asignacion }}</td>
+                </tr>
+                <tr>
+                    <th>Usuario Responsable:</th>
+                    <td>{{ $asignacion->usuario->name }}</td>
+                </tr>
+                <tr>
+                    <th>Ticket:</th>
+                    <td>{{ $asignacion->ticket }}</td>
+                </tr>
+                <tr>
+                    <th>Nota Descriptiva:</th>
+                    <td>{{ $asignacion->nota_descriptiva }}</td>
+                </tr>
+            </table>
+
+            <a href="{{ route('asignacionaccesorios.index') }}" class="btn btn-secondary">Volver a la lista</a>
+            <a href="{{ route('asignacionaccesorios.edit', $asignacion->id) }}" class="btn btn-primary">Editar</a>
+
+            <form action="{{ route('asignacionaccesorios.destroy', $asignacion->id) }}" method="POST"
+                style="display: inline-block;">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="btn btn-danger"
+                    onclick="return confirm('¿Está seguro de que desea eliminar este accesorio?')">Eliminar</button>
+            </form>
+        </div>
+    </div>
+@endsection

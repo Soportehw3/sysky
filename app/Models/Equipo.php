@@ -9,16 +9,21 @@ class Equipo extends Model
 {
     use HasFactory;
 
-    protected $table = 'equipos';
-
     protected $fillable = [
-        'numero_serie', 
-        'marca', 
-        'modelo', 
-        'etiqueta_skytex', 
-        'tipo', 
-        'orden_compra', 
-        'requisicion', 
-        'estado'
+        'numero_serie',
+        'marca',
+        'modelo',
+        'etiqueta_skytex',
+        'tipo',
+        'orden_compra',
+        'requisicion',
+        'estado',
+        'empleado_id',
     ];
+
+    public function empleado()
+    {
+        return $this->belongsTo(Empleado::class);
+    }
 }
+
