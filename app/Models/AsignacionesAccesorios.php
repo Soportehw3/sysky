@@ -34,3 +34,4 @@ class AsignacionesAccesorios extends Model
         return $this->belongsTo(User::class, 'usuario_responsable');
     }
 }
+

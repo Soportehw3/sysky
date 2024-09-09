@@ -8,11 +8,21 @@ use App\Http\Controllers\AccesorioController;
 use App\Http\Controllers\EmpresaController;
 use App\Http\Controllers\AsignacionEquipoController;
 use App\Http\Controllers\AsignacionAccesoriosController;
-
-
-
-
-
+use App\Http\Controllers\Auth\LoginController;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\PrestamoController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\AccionesController;
+use App\Http\Controllers\SalidaEquipoController;
+use App\Models\AsignacionEquipo;
+use App\Models\Empleado;
+use App\Models\Equipo;
+use App\Http\Controllers\TipoEquipoController;
+use App\Http\Controllers\MarcaController;
+use App\Http\Controllers\MarcaAccesorioController;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,14 +35,20 @@ use App\Http\Controllers\AsignacionAccesoriosController;
 |
 */
 
+
 Route::get('/', function () {
-    return view('welcome');
+    return redirect('/login');
 });
 
 
-Route::get('/admin', function () {
-    return view('layouts.admin');   
-});
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'home'])->name('home');
+
+Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+
+Route::get('/perfil', [UserController::class, 'showProfile'])->name('perfil')->middleware('auth');
+Route::put('/perfil', [UserController::class, 'updateProfile'])->name('perfil.update')->middleware('auth');
+
+
 
 // Ruta para listar empleados
 Route::get('empleados', [EmpleadoController::class, 'index'])->name('empleados.index');
@@ -61,6 +77,8 @@ Route::delete('empleados/{id}', [EmpleadoController::class, 'destroy'])->name('e
 // Ruta para listar todos los equipos
 Route::get('/equipos', [EquipoController::class, 'index'])->name('equipos.index');
 
+Route::get('/equipos/baja', [EquipoController::class, 'baja'])->name('equipos.baja');
+
 // Ruta para mostrar el formulario de creación de un nuevo equipo
 Route::get('/equipos/create', [EquipoController::class, 'create'])->name('equipos.create');
 
@@ -78,6 +96,18 @@ Route::put('/equipos/{equipo}', [EquipoController::class, 'update'])->name('equi
 
 // Ruta para eliminar un equipo específico
 Route::delete('/equipos/{equipo}', [EquipoController::class, 'destroy'])->name('equipos.destroy');
+
+Route::get('/api/equipos/{id}/estado', function ($id) {
+    $equipo = Equipo::findOrFail($id);
+    return response()->json(['estado' => $equipo->estado]);
+});
+
+
+//Rutas para salidas de equipo
+Route::resource('salidas', SalidaEquipoController::class);
+Route::get('/salidas/{id}', [SalidaEquipoController::class, 'show'])->name('salidas.show');
+Route::get('/salidas/{id}/generar-pdf', [SalidaEquipoController::class, 'generarPDF'])->name('ruta.generarPDF');
+
 
 //-------------------------------------------------------------------------------------------------------------------------------------//
 
@@ -172,6 +202,73 @@ Route::put('/asignacionaccesorios/{asignacion}', [AsignacionAccesoriosController
 // Ruta para eliminar una asignación de accesorio específica
 Route::delete('/asignacionaccesorios/{asignacion}', [AsignacionAccesoriosController::class, 'destroy'])->name('asignacionaccesorios.destroy');
 
+Route::resource('prestamos', PrestamoController::class);
+Route::get('prestamos/{id}/pdf', [PrestamoController::class, 'generarPDF'])->name('prestamos.pdf');
+
+
+
+Route::get('/acciones', [AccionesController::class, 'index'])->name('acciones.index');
+
+
+Route::get('/asignacionesequipos/{id}/pdf', [AsignacionEquipoController::class, 'generatePdf'])->name('asignacionesequipos.pdf');
+
+
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+
+// Ruta para mostrar la lista de tipos de equipo
+Route::get('tiposequipos', [TipoEquipoController::class, 'index'])->name('tiposequipos.index');
+
+// Ruta para mostrar el formulario de creación de un nuevo tipo de equipo
+Route::get('tiposequipos/create', [TipoEquipoController::class, 'create'])->name('tiposequipos.create');
+
+// Ruta para almacenar un nuevo tipo de equipo
+Route::post('tiposequipos', [TipoEquipoController::class, 'store'])->name('tiposequipos.store');
+
+// Ruta para mostrar el formulario de edición de un tipo de equipo existente
+Route::get('tiposequipos/{tipoEquipo}/edit', [TipoEquipoController::class, 'edit'])->name('tiposequipos.edit');
+
+// Ruta para actualizar un tipo de equipo existente
+Route::put('tiposequipos/{tipoEquipo}', [TipoEquipoController::class, 'update'])->name('tiposequipos.update');
+
+// Ruta para eliminar un tipo de equipo existente
+Route::delete('tiposequipos/{tipoEquipo}', [TipoEquipoController::class, 'destroy'])->name('tiposequipos.destroy');
+
+
+// Ruta para mostrar la lista de marcas
+Route::get('marcas', [MarcaController::class, 'index'])->name('marcas.index');
+
+// Ruta para mostrar el formulario de creación de una nueva marca
+Route::get('marcas/create', [MarcaController::class, 'create'])->name('marcas.create');
+
+// Ruta para almacenar una nueva marca
+Route::post('marcas', [MarcaController::class, 'store'])->name('marcas.store');
+
+// Ruta para mostrar el formulario de edición de una marca existente
+Route::get('marcas/{marca}/edit', [MarcaController::class, 'edit'])->name('marcas.edit');
+
+// Ruta para actualizar una marca existente
+Route::put('marcas/{marca}', [MarcaController::class, 'update'])->name('marcas.update');
+
+// Ruta para eliminar una marca existente
+Route::delete('marcas/{marca}', [MarcaController::class, 'destroy'])->name('marcas.destroy');
+
+
+// Ruta para mostrar la lista de marcas de accesorios
+Route::get('marcasaccesorios', [MarcaAccesorioController::class, 'index'])->name('marcasaccesorios.index');
+
+// Ruta para mostrar el formulario de creación de una nueva marca de accesorio
+Route::get('marcasaccesorios/create', [MarcaAccesorioController::class, 'create'])->name('marcasaccesorios.create');
+
+// Ruta para almacenar una nueva marca de accesorio
+Route::post('marcasaccesorios', [MarcaAccesorioController::class, 'store'])->name('marcasaccesorios.store');
+
+// Ruta para mostrar el formulario de edición de una marca de accesorio existente
+Route::get('marcasaccesorios/{marcaAccesorio}/edit', [MarcaAccesorioController::class, 'edit'])->name('marcasaccesorios.edit');
+
+// Ruta para actualizar una marca de accesorio existente
+Route::put('marcasaccesorios/{marcaAccesorio}', [MarcaAccesorioController::class, 'update'])->name('marcasaccesorios.update');
+
+// Ruta para eliminar una marca de accesorio existente
+Route::delete('marcasaccesorios/{marcaAccesorio}', [MarcaAccesorioController::class, 'destroy'])->name('marcasaccesorios.destroy');

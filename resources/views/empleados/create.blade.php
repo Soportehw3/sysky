@@ -14,7 +14,6 @@
         </div>
     @endif
 
-
     <div class="card shadow-lg p-3 mb-5 bg-white rounded mb-4">
         <div class="card-body">
             <form class="row g-3 needs-validation" novalidate action="{{ route('empleados.store') }}" method="POST">
@@ -78,6 +77,5 @@
 
         </div>
     </div>
-
 
 @endsection

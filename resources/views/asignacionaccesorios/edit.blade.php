@@ -1,7 +1,10 @@
-    <h1>Editar Asignación de Accesorio</h1>
+@extends('layouts.admin')
 
+@section('titulo', 'Editar Asignación de Accesorio')
+
+@section('contenido')
     @if ($errors->any())
-        <div>
+        <div class="alert alert-danger">
             <ul>
                 @foreach ($errors->all() as $error)
                     <li>{{ $error }}</li>
@@ -10,42 +13,58 @@
         </div>
     @endif
 
-    <form action="{{ route('asignacionaccesorios.update', $asignacion->id) }}" method="POST">
-        @csrf
-        @method('PUT')
+    <div class="card shadow-lg p-3 mb-5 bg-white rounded mb-4">
+        <div class="card-body">
+            <form action="{{ route('asignacionaccesorios.update', $asignacion->id) }}" method="POST">
+                @csrf
+                @method('PUT')
 
-        <label for="empleado_id">Empleado:</label>
-        <select id="empleado_id" name="empleado_id" required>
-            @foreach ($empleados as $empleado)
-                <option value="{{ $empleado->id }}" {{ $asignacion->empleado_id == $empleado->id ? 'selected' : '' }}>{{ $empleado->nombre }}</option>
-            @endforeach
-        </select>
+                <div class="row">
+                    <div class="col-md-3">
+                        <label for="empleado_id" class="form-label">Empleado:</label>
+                        <select id="empleado_id" name="empleado_id" class="form-control" required>
+                            @foreach ($empleados as $empleado)
+                                <option value="{{ $empleado->id }}" {{ $asignacion->empleado_id == $empleado->id ? 'selected' : '' }}>{{ $empleado->nombre }} {{ $empleado->apellidoP }} {{ $empleado->apellidoM }}</option>
+                            @endforeach
+                        </select>
+                    </div>
 
-        <label for="accesorio_id">Accesorio:</label>
-        <select id="accesorio_id" name="accesorio_id" required>
-            @foreach ($accesorios as $accesorio)
-                <option value="{{ $accesorio->id }}" {{ $asignacion->accesorio_id == $accesorio->id ? 'selected' : '' }}>{{ $accesorio->descripcion }}</option>
-            @endforeach
-        </select>
+                    <div class="col-md-3">
+                        <label for="accesorio_id" class="form-label">Accesorio:</label>
+                        <select id="accesorio_id" name="accesorio_id" class="form-control" required>
+                            @foreach ($accesorios as $accesorio)
+                                <option value="{{ $accesorio->id }}" {{ $asignacion->accesorio_id == $accesorio->id ? 'selected' : '' }}>{{ $accesorio->descripcion }} - {{ $accesorio->marca }}</option>
+                            @endforeach
+                        </select>
+                    </div>
 
-        <label for="cantidad_asignada">Cantidad Asignada:</label>
-        <input type="number" id="cantidad_asignada" name="cantidad_asignada" value="{{ $asignacion->cantidad_asignada }}" required>
+                    <div class="col-md-3">
+                        <label for="cantidad_asignada" class="form-label">Cantidad Asignada:</label>
+                        <input type="number" id="cantidad_asignada" name="cantidad_asignada" class="form-control" value="{{ $asignacion->cantidad_asignada }}" required>
+                    </div>
 
-        <label for="fecha_asignacion">Fecha de Asignación:</label>
-        <input type="date" id="fecha_asignacion" name="fecha_asignacion" value="{{ $asignacion->fecha_asignacion }}" required>
+                    <div class="col-md-3">
+                        <label for="fecha_asignacion" class="form-label">Fecha de Asignación:</label>
+                        <input type="date" id="fecha_asignacion" name="fecha_asignacion" class="form-control" value="{{ $asignacion->fecha_asignacion }}" required>
+                    </div>
 
-        <label for="usuario_responsable">Usuario Responsable:</label>
-        <select id="usuario_responsable" name="usuario_responsable" required>
-            @foreach ($usuarios as $usuario)
-                <option value="{{ $usuario->id }}" {{ $asignacion->usuario_responsable == $usuario->id ? 'selected' : '' }}>{{ $usuario->name }}</option>
-            @endforeach
-        </select>
 
-        <label for="ticket">Ticket:</label>
-        <input type="number" id="ticket" name="ticket" value="{{ $asignacion->ticket }}" required>
+                    <div class="col-md-3">
+                        <label for="ticket" class="form-label">Ticket:</label>
+                        <input type="number" id="ticket" name="ticket" class="form-control" value="{{ $asignacion->ticket }}" required>
+                    </div>
 
-        <label for="nota_descriptiva">Nota Descriptiva:</label>
-        <input type="text" id="nota_descriptiva" name="nota_descriptiva" value="{{ $asignacion->nota_descriptiva }}">
+                    <div class="col-md-12">
+                        <label for="nota_descriptiva" class="form-label">Nota Descriptiva:</label>
+                        <input type="text" id="nota_descriptiva" name="nota_descriptiva" class="form-control" value="{{ $asignacion->nota_descriptiva }}">
+                    </div>
 
-        <button type="submit">Guardar</button>
-    </form>
+                </div>
+
+                <div class="col-12 md-3 mt-4">
+                    <button type="submit" class="btn btn-primary">Actualizar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+@endsection

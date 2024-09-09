@@ -8,10 +8,18 @@ use App\Models\Empleado;
 class EmpleadoController extends Controller
 {
     // Mostrar una lista de empleados
-    public function index()
+    public function index(Request $request)
     {
-        $empleados = Empleado::all();
-        return view('empleados.index', compact('empleados'));
+        $search = $request->input('search');
+        $sortField = $request->input('sort', 'created_at');
+        $sortOrder = $request->input('order', 'desc');
+
+        $empleados = Empleado::when($search, function ($q) use ($search) {
+            $q->whereRaw("CONCAT(nombre, ' ', apellidoP, ' ', apellidoM) LIKE ?", ["%{$search}%"])
+              ->orWhere('numero_nomina', 'like', "%{$search}%");
+        })->orderBy($sortField, $sortOrder)->paginate(10);
+
+        return view('empleados.index', compact('empleados', 'search', 'sortField', 'sortOrder'));
     }
 
     // Mostrar el formulario para crear un nuevo empleado
@@ -24,12 +32,13 @@ class EmpleadoController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'numero_nomina' => 'required|string|max:50|unique:empleados',
+            'numero_nomina' => 'required|string|max:50|unique:empleados,numero_nomina',
             'nombre' => 'required|string|max:100',
             'apellidoP' => 'required|string|max:100',
             'apellidoM' => 'required|string|max:100',
             'puesto' => 'required|string|max:100',
             'area' => 'required|string|max:100',
+            'status' => 'required|string|max:100',
         ]);
 
         Empleado::create($request->all());
@@ -37,10 +46,10 @@ class EmpleadoController extends Controller
         return redirect()->route('empleados.index')->with('success', 'Empleado creado exitosamente.');
     }
 
-    // Mostrar un empleado específico
     public function show($id)
     {
-        $empleado = Empleado::find($id);
+        $empleado = Empleado::with(['asignacionesequipos.equipo.marca', 'asignacionesequipos.equipo.tipoEquipo', 'asignacionesaccesorios.accesorio.marcaAccesorio', 'prestamos.equipo'])->find($id);
+
         return view('empleados.show', compact('empleado'));
     }
 
@@ -55,12 +64,13 @@ class EmpleadoController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'numero_nomina' => 'required|string|max:50|unique:empleados,numero_nomina,'.$id,
+            'numero_nomina' => 'required|string|max:50|unique:empleados,numero_nomina,' . $id,
             'nombre' => 'required|string|max:100',
             'apellidoP' => 'required|string|max:100',
             'apellidoM' => 'required|string|max:100',
             'puesto' => 'required|string|max:100',
             'area' => 'required|string|max:100',
+            'status' => 'required|string|max:100',
         ]);
 
         $empleado = Empleado::find($id);
@@ -77,5 +87,9 @@ class EmpleadoController extends Controller
 
         return redirect()->route('empleados.index')->with('success', 'Empleado eliminado exitosamente.');
     }
-}
 
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+}
