@@ -2,26 +2,31 @@
 
 namespace App\Console;
 
+use App\Http\Controllers\ImpresoraController;
+use App\Models\Impresora;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
+
+
 class Kernel extends ConsoleKernel
 {
-    /**
-     * Define the application's command schedule.
-     */
-    protected function schedule(Schedule $schedule): void
+    protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')->hourly();
+        $schedule->command('prestamos:notificar')->dailyAt('11:55');
+        // Programa la sincronización para que se ejecute cada ho
+        $schedule->command('sync:empleados')->hourly();
+
+        //$schedule->command('licencias:enviar-recordatorios')->daily();
+        $schedule->command('licencias:enviar-recordatorios')->dailyAt('17:18');
     }
 
-    /**
-     * Register the commands for the application.
-     */
-    protected function commands(): void
+    protected function commands()
     {
-        $this->load(__DIR__.'/Commands');
+        $this->load(__DIR__ . '/Commands');
 
-        require base_path('routes/console.php');
     }
+    protected $commands = [
+        Commands\SyncEmpleados::class,
+    ];
 }

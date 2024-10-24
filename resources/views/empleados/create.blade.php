@@ -14,7 +14,6 @@
         </div>
     @endif
 
-
     <div class="card shadow-lg p-3 mb-5 bg-white rounded mb-4">
         <div class="card-body">
             <form class="row g-3 needs-validation" novalidate action="{{ route('empleados.store') }}" method="POST">
@@ -68,8 +67,16 @@
                     </div>
                 </div>
 
+                <div class="col-md-6">
+                    <label for="status" class="form-label">Estado</label>
+                    <input type="text" class="form-control" id="status" name="status" required>
+                    <div class="valid-feedback">
+                        Good!
+                    </div>
+                </div>
+
                 <div class="col-12">
-                    <button type="submit" class="btn btn-primary">Crear</button>
+                    <button type="submit" class="btn btn-primary">Registrar</button>
                 </div>
 
 
@@ -78,6 +85,5 @@
 
         </div>
     </div>
-
 
 @endsection

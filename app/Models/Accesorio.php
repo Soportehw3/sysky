@@ -10,11 +10,22 @@ class Accesorio extends Model
     use HasFactory;
 
     protected $fillable = [
-        'descripcion', 
-        'marca', 
-        'modelo', 
-        'cantidad', 
-        'orden_compra_acc', 
-        'requisicion'
+        'descripcion',
+        'marca_id',
+        'modelo',
+        'cantidad',
+        'orden_compra_acc',
+        'requisicion',
+        'cantidad_minima',
     ];
+
+    public function empleado()
+    {
+        return $this->belongsTo(Empleado::class);
+    }
+
+    public function marcaAccesorio()
+    {
+        return $this->belongsTo(MarcaAccesorio::class, 'marca_id');
+    }
 }

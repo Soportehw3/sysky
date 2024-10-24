@@ -1,7 +1,10 @@
-    <h1>Crear Nueva Asignación de Accesorio</h1>
+@extends('layouts.admin')
 
+@section('titulo', 'Crear Nueva Asignación de Accesorio')
+
+@section('contenido')
     @if ($errors->any())
-        <div>
+        <div class="alert alert-danger">
             <ul>
                 @foreach ($errors->all() as $error)
                     <li>{{ $error }}</li>
@@ -10,41 +13,57 @@
         </div>
     @endif
 
-    <form action="{{ route('asignacionaccesorios.store') }}" method="POST">
-        @csrf
-        <label for="empleado_id">Empleado:</label>
-        <select id="empleado_id" name="empleado_id" required>
-            @foreach ($empleados as $empleado)
-                <option value="{{ $empleado->id }}">{{ $empleado->nombre }}</option>
-            @endforeach
-        </select>
+    <div class="card shadow-lg p-3 mb-5 bg-white rounded mb-4">
+        <div class="card-body">
+            <form action="{{ route('asignacionaccesorios.store') }}" method="POST">
+                @csrf
 
-        <label for="accesorio_id">Accesorio:</label>
-        <select id="accesorio_id" name="accesorio_id" required>
-            @foreach ($accesorios as $accesorio)
-                <option value="{{ $accesorio->id }}">{{ $accesorio->descripcion }}</option>
-            @endforeach
-        </select>
+                <div class="row">
+                    <div class="col-md-3">
+                        <label for="empleado_id" class="form-label">Empleado:</label>
+                        <select id="empleado_id" name="empleado_id" class="form-control" required>
+                            <option value="">Seleccione un empleado</option>
+                            @foreach ($empleados as $empleado)
+                                <option value="{{ $empleado->id }}">{{ $empleado->nombre }} {{ $empleado->apellidoP }} {{ $empleado->apellidoM }}</option>
+                            @endforeach
+                        </select>
+                    </div>
 
-        <label for="cantidad_asignada">Cantidad Asignada:</label>
-        <input type="number" id="cantidad_asignada" name="cantidad_asignada" required>
+                    <div class="col-md-3">
+                        <label for="accesorio_id" class="form-label">Accesorio:</label>
+                        <select name="accesorio_id" id="accesorio_id" class="form-control" required>
+                            <option value="">Seleccione un Accesorio</option>
+                            @foreach ($accesorios as $accesorio)
+                                <option value="{{ $accesorio->id }}">{{ $accesorio->descripcion }} - {{ $accesorio->marca }}</option>
+                            @endforeach
+                        </select>
+                    </div>
 
-        <label for="fecha_asignacion">Fecha de Asignación:</label>
-        <input type="date" id="fecha_asignacion" name="fecha_asignacion" required>
+                    <div class="col-md-3">
+                        <label for="cantidad_asignada" class="form-label">Cantidad Asignada:</label>
+                        <input type="number" name="cantidad_asignada" id="cantidad_asignada" class="form-control" min="1" required>
+                    </div>
 
-        <label for="usuario_responsable">Usuario Responsable:</label>
-        <select id="usuario_responsable" name="usuario_responsable" required>
-            @foreach ($usuarios as $usuario)
-                <option value="{{ $usuario->id }}">{{ $usuario->name }}</option>
-            @endforeach
-        </select>
+                    <div class="col-md-3">
+                        <label for="fecha_asignacion" class="form-label">Fecha de Asignación:</label>
+                        <input type="date" class="form-control" id="datepicker" name="fecha_asignacion" required min="1995-01-01" max="2050-12-31" />
+                    </div>
 
-        <label for="ticket">Ticket:</label>
-        <input type="number" id="ticket" name="ticket" required>
+                    <div class="col-md-3">
+                        <label for="ticket" class="form-label">Ticket:</label>
+                        <input type="number" class="form-control" id="ticket" name="ticket" required>
+                    </div>
 
-        <label for="nota_descriptiva">Nota Descriptiva:</label>
-        <input type="text" id="nota_descriptiva" name="nota_descriptiva">
+                    <div class="col-md-3">
+                        <label for="nota_descriptiva" class="form-label">Nota Descriptiva:</label>
+                        <input type="text" class="form-control" id="nota_descriptiva" name="nota_descriptiva" required>
+                    </div>
+                </div>
 
-        <button type="submit">Guardar</button>
-    </form>
-
+                <div class="col-12 mt-4">
+                    <button type="submit" class="btn btn-primary">Registrar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+@endsection

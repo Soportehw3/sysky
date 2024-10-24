@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class AsignacionEquipo extends Model
 {
     use HasFactory;
+    protected $table = 'asignaciones_equipos'; // Asegúrate de que el nombre de la tabla sea correcto
+
 
     protected $fillable = [
         'empleado_id',
@@ -16,22 +18,23 @@ class AsignacionEquipo extends Model
         'usuario_responsable',
         'ticket',
         'nota_descriptiva',
-        'empresa_id'
+        'empresa_id',
+        'estado', // Agregar estado a fillable
     ];
-
-    public function empleado()
-    {
-        return $this->belongsTo(Empleado::class);
-    }
 
     public function equipo()
     {
         return $this->belongsTo(Equipo::class);
     }
 
+    public function empleado()
+    {
+        return $this->belongsTo(Empleado::class);
+    }
+
     public function usuario()
     {
-        return $this->belongsTo(User::class, 'usuario_responsable'); 
+        return $this->belongsTo(User::class, 'usuario_responsable');
     }
 
     public function empresa()
